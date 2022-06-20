@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS "kyberswap";
+DROP TABLE IF EXISTS "paraswap";
+DROP TABLE IF EXISTS "oneinch";
+DROP TABLE IF EXISTS "zerox";

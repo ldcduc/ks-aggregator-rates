@@ -1,0 +1,13 @@
+version: "3"
+services:
+  db_ks_aggregator_rates:
+    image: "postgres:13"
+    container_name: "my_postgres"
+    environment:
+      POSTGRES_PASSWORD: "my_password"
+    ports:
+      - "54320:5432"
+    volumes:
+      - ks_aggregator_rates:/var/lib/postgresql/data
+volumes:
+  ks_aggregator_rates:

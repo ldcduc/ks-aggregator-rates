@@ -2,6 +2,7 @@ package requests
 
 import (
 	"fmt"
+	"ks-aggregator-rates/internal/pkg/client/models"
 	"math/big"
 )
 
@@ -21,6 +22,19 @@ func DefaultOneInchRequest(amount big.Int) *OneInch {
 func (protocol *OneInch) ParseRequest() string {
 	res := fmt.Sprintf("https://api.1inch.io/v4.0/1/quote?fromTokenAddress=%s&toTokenAddress=%s&amount=%s", protocol.FromTokenAddress, protocol.ToTokenAddress, protocol.Amount.String())
 	return res
+}
+
+func (protocol *OneInch) ParseResponse(body interface{}, timestamp int64) models.Response {
+	data := body.(map[string]interface{})
+	return models.OneInch{
+		Pair:            protocol.PairInfo,
+		FromToken:       models.IntoToken(data["fromToken"].(map[string]interface{})),
+		ToToken:         models.IntoToken(data["toToken"].(map[string]interface{})),
+		ToTokenAmount:   data["toTokenAmount"].(string),
+		FromTokenAmount: data["fromTokenAmount"].(string),
+		EstimatedGas:    data["estimatedGas"].(float64),
+		Timestamp:       timestamp,
+	}
 }
 
 func (protocol *OneInch) RequestInfo() string {

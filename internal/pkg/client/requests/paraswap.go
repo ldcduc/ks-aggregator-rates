@@ -2,6 +2,7 @@ package requests
 
 import (
 	"fmt"
+	"ks-aggregator-rates/internal/pkg/client/models"
 	"math/big"
 	"strconv"
 )
@@ -28,6 +29,25 @@ func DefaultParaSwapRequest(amount big.Int) *ParaSwap {
 func (protocol *ParaSwap) ParseRequest() string {
 	res := fmt.Sprintf("https://apiv5.paraswap.io/prices/?srcToken=%s&destToken=%s&amount=%s&srcDecimals=%s&destDecimals=%s&side=%s&network=%s", protocol.SrcToken, protocol.DestToken, protocol.Amount.String(), strconv.Itoa(protocol.SrcDecimals), strconv.Itoa(protocol.DestDecimals), protocol.Side, strconv.Itoa(protocol.Network))
 	return res
+}
+
+func (protocol *ParaSwap) ParseResponse(body interface{}, timestamp int64) models.Response {
+	data := body.(map[string]interface{})["priceRoute"].(map[string]interface{})
+	return models.ParaSwap{
+		BlockNumber:  int(data["blockNumber"].(float64)),
+		Network:      int(data["network"].(float64)),
+		Pair:         protocol.PairInfo,
+		SrcToken:     data["srcToken"].(string),
+		SrcDecimals:  data["srcDecimals"].(float64),
+		SrcAmount:    data["srcAmount"].(string),
+		SrcUSD:       data["srcUSD"].(string),
+		DestToken:    data["destToken"].(string),
+		DestDecimals: data["destDecimals"].(float64),
+		DestAmount:   data["destAmount"].(string),
+		DestUSD:      data["destUSD"].(string),
+		Side:         data["side"].(string),
+		Timestamp:    timestamp,
+	}
 }
 
 func (protocol *ParaSwap) RequestInfo() string {

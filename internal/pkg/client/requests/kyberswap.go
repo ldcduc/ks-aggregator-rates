@@ -2,6 +2,7 @@ package requests
 
 import (
 	"fmt"
+	"ks-aggregator-rates/internal/pkg/client/models"
 	"math/big"
 )
 
@@ -39,6 +40,24 @@ func (protocol *KyberSwap) ParseRequest() string {
 	}
 	res := fmt.Sprintf("https://aggregator-api.kyberswap.com/ethereum/route?tokenIn=%s&tokenOut=%s&amountIn=%s&saveGas=%s&gasInclude=%s", protocol.TokenIn, protocol.TokenOut, protocol.AmountIn.String(), saveGasString, gasIncludeString)
 	return res
+}
+
+func (protocol *KyberSwap) ParseResponse(body interface{}, timestamp int64) models.Response {
+	data := body.(map[string]interface{})
+	return models.KyberSwap{
+		Pair:         protocol.PairInfo,
+		InputToken:   protocol.TokenIn,
+		OutputToken:  protocol.TokenOut,
+		InputAmount:  data["inputAmount"].(string),
+		OutputAmount: data["outputAmount"].(string),
+		TotalGas:     data["totalGas"].(float64),
+		GasPriceGwei: data["gasPriceGwei"].(string),
+		GasUsd:       data["gasUsd"].(float64),
+		AmountInUsd:  data["amountInUsd"].(float64),
+		AmountOutUsd: data["amountOutUsd"].(float64),
+		ReceivedUsd:  data["receivedUsd"].(float64),
+		Timestamp:    timestamp,
+	}
 }
 
 func (protocol *KyberSwap) RequestInfo() string {

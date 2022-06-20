@@ -1,0 +1,55 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type KyberSwapPrice {
+    Id: ID!
+    Pair: String!
+    InputToken: String!
+    OutputToken: String!
+    InputAmount: String!
+    OutputAmount: String!
+    TotalGas: Float!
+    GasPriceGwei: String!
+    GasUsd: Float!
+    Timestamp: Int!
+}
+
+type OneInchPrice {
+    Id: ID!
+    Pair: String!
+    FromTokenAddress: String!
+    ToTokenAddress: String!
+    ToTokenAmount: String!
+    FromTokenAmount: String!
+    EstimatedGas: Float!
+    Timestamp: Int!
+}
+
+type ParaSwapPrice {
+    Id: ID!
+    BlockNumber: Int!
+    Pair: String!
+    SrcToken: String!
+    SrcAmount: String!
+    DestToken: String!
+    DestAmount: String!
+    Timestamp: String!
+}
+
+type ZeroXPrice {
+    Id: ID!
+    Pair: String!
+    BuyTokenAddress: String!
+    SellTOkenAddress: String!
+    BuyAmount: String!
+    SellAmount: String!
+    Timestamp: String!
+}
+
+type Query {
+    KyberSwapPrices: [KyberSwapPrice]!,
+    OneInchPrices: [OneInchPrice]!,
+    ParaSwapPrices: [ParaSwapPrice]!,
+    ZeroXPrices: [ZeroXPrice]!,
+}

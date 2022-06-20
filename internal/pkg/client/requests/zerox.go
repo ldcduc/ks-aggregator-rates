@@ -2,6 +2,7 @@ package requests
 
 import (
 	"fmt"
+	"ks-aggregator-rates/internal/pkg/client/models"
 	"math/big"
 )
 
@@ -21,6 +22,30 @@ func DefaultZeroXRequest(amount big.Int) *ZeroX {
 func (protocol *ZeroX) ParseRequest() string {
 	res := fmt.Sprintf("https://api.0x.org/swap/v1/quote?buyToken=%s&sellToken=%s&sellAmount=%s", protocol.BuyToken, protocol.SellToken, protocol.SellAmount.String())
 	return res
+}
+
+func (protocol *ZeroX) ParseResponse(body interface{}, timestamp int64) models.Response {
+	data := body.(map[string]interface{})
+	return models.ZeroX{
+		Pair:                 protocol.PairInfo,
+		ChainId:              int(data["chainId"].(float64)),
+		Price:                data["price"].(string),
+		GuaranteedPrice:      data["guaranteedPrice"].(string),
+		EstimatedPriceImpact: data["estimatedPriceImpact"].(string),
+		Value:                data["value"].(string),
+		Gas:                  data["gas"].(string),
+		EstimatedGas:         data["estimatedGas"].(string),
+		GasPrice:             data["gasPrice"].(string),
+		ProtocolFee:          data["protocolFee"].(string),
+		MinimumProtocolFee:   data["minimumProtocolFee"].(string),
+		BuyTokenAddress:      data["buyTokenAddress"].(string),
+		SellTokenAddress:     data["sellTokenAddress"].(string),
+		BuyAmount:            data["buyAmount"].(string),
+		SellAmount:           data["sellAmount"].(string),
+		SellTokenToEthRate:   data["sellTokenToEthRate"].(string),
+		BuyTokenToEthRate:    data["buyTokenToEthRate"].(string),
+		Timestamp:            timestamp,
+	}
 }
 
 func (protocol *ZeroX) RequestInfo() string {

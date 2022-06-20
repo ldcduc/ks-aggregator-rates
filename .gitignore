@@ -1,0 +1,7 @@
+vendor
+.idea
+command
+.env
+.DS_Store
+app
+
